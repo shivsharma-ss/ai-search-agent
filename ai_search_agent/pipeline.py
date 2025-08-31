@@ -65,8 +65,10 @@ class RedditURLAnalysis(BaseModel):
 def google_search(state: State):
     user_question = state.get("user_question", "") or ""
     print(f"🔎 Google: searching for → {user_question}")
-    cfg = (state.get("config") or {})
-    google_results = serp_search(user_question, engine="google", api_key=cfg.get("brightdata_api_key"))
+    cfg = state.get("config") or {}
+    google_results = serp_search(
+        user_question, engine="google", api_key=cfg.get("brightdata_api_key")
+    )
     try:
         n = len((google_results or {}).get("organic", []))
         print(f"✅ Google: got {n} organic results")
@@ -78,8 +80,10 @@ def google_search(state: State):
 def bing_search(state: State):
     user_question = state.get("user_question", "") or ""
     print(f"🔎 Bing: searching for → {user_question}")
-    cfg = (state.get("config") or {})
-    bing_results = serp_search(user_question, engine="bing", api_key=cfg.get("brightdata_api_key"))
+    cfg = state.get("config") or {}
+    bing_results = serp_search(
+        user_question, engine="bing", api_key=cfg.get("brightdata_api_key")
+    )
     try:
         n = len((bing_results or {}).get("organic", []))
         print(f"✅ Bing: got {n} organic results")
@@ -91,7 +95,7 @@ def bing_search(state: State):
 def reddit_search(state: State):
     user_question = state.get("user_question", "") or ""
     print(f"🔎 Reddit: searching for → {user_question}")
-    cfg = (state.get("config") or {})
+    cfg = state.get("config") or {}
     reddit_results = reddit_search_api(
         keyword=user_question,
         api_key=cfg.get("brightdata_api_key"),
@@ -134,7 +138,7 @@ def retrieve_reddit_posts(state: State):
         return {"reddit_post_data": []}
 
     print(f"📥 Processing {len(selected_urls)} Reddit URLs")
-    cfg = (state.get("config") or {})
+    cfg = state.get("config") or {}
     reddit_post_data = reddit_post_retrieval(
         selected_urls,
         api_key=cfg.get("brightdata_api_key"),
@@ -174,7 +178,9 @@ def analyze_reddit_results(state: State):
     user_question = state.get("user_question", "") or ""
     reddit_results = state.get("reddit_results", "")
     reddit_post_data = state.get("reddit_post_data", "")
-    messages = get_reddit_analysis_messages(user_question, reddit_results, reddit_post_data)
+    messages = get_reddit_analysis_messages(
+        user_question, reddit_results, reddit_post_data
+    )
     llm = state.get("llm")
     reply = llm.invoke(messages)  # type: ignore[attr-defined]
     return {"reddit_analysis": reply.content}

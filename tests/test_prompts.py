@@ -13,4 +13,3 @@ def test_reddit_url_analysis_messages_shape():
     msgs = P.get_reddit_url_analysis_messages("Why Y?", {"parsed_posts": []})
     assert len(msgs) == 2
     assert all("content" in m for m in msgs)
-

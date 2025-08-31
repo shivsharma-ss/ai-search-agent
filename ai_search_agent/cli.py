@@ -22,4 +22,3 @@ def main() -> None:
             print(f"\nFinal Answer:\n{final_answer}\n")
 
         print("-" * 80)
-

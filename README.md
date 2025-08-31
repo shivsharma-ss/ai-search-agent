@@ -1,6 +1,8 @@
 AI Search Agent
 ================
 
+[![CI Pipeline](https://github.com/shivsharma-ss/ai-search-agent/workflows/CI%20Pipeline/badge.svg)](https://github.com/shivsharma-ss/ai-search-agent/actions)
+
 Multi‑source research agent that queries Google, Bing, and Reddit, summarizes each source with an LLM, and synthesizes a final answer. Built with a production‑minded stack and clear separation between a FastAPI backend and a Vite/React frontend.
 
 Highlights
@@ -38,7 +40,31 @@ Quick Start
 - Run tests
   - `pytest`
 
-Architecture
+## 🚀 CI/CD Pipeline
+
+This project includes a comprehensive GitHub Actions CI/CD pipeline that runs on every push and pull request:
+
+### **Automated Testing:**
+- ✅ **Backend Tests**: Runs pytest with coverage
+- ✅ **Frontend Tests**: Builds and validates React app
+- ✅ **Code Quality**: Black formatting, flake8 linting
+- ✅ **Integration Tests**: Tests backend startup and frontend build
+
+### **Quality Gates:**
+- All tests must pass before merging
+- Code formatting is automatically checked
+- Security vulnerabilities are scanned
+- Build artifacts are preserved for 7 days
+
+### **Future Deployment:**
+- Staging deployment on `develop` branch
+- Production deployment on `main` branch
+- Environment-specific configurations
+- Automated rollbacks on failure
+
+**View the pipeline:** [GitHub Actions](https://github.com/shivsharma-ss/ai-search-agent/actions)
+
+## Architecture
 - `ai_search_agent/pipeline.py`: LangGraph pipeline orchestrating:
   - SERP via Bright Data (Google/Bing)
   - Reddit posts search (dataset) → select URLs → Reddit comments retrieval (dataset)

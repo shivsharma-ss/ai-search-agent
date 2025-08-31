@@ -10,6 +10,7 @@ load_dotenv()
 
 dataset_id = "gd_lvz8ah06191smkebj4"
 
+
 def _make_api_request(url, *, api_key: str | None = None, **kwargs):
     """Helper to POST to Bright Data API with auth and error handling.
 
@@ -56,7 +57,7 @@ def serp_search(query, engine="google", *, api_key: str | None = None):
     payload = {
         "zone": "ai_agent",
         "url": f"{base_url}?q={quote_plus(query)}&brd_json=1",
-        "format": "raw"
+        "format": "raw",
     }
 
     print(f"🌐 SERP: requesting {engine.title()} results…")
@@ -69,16 +70,22 @@ def serp_search(query, engine="google", *, api_key: str | None = None):
         "organic": full_response.get("organic", []),
     }
     try:
-        print(f"🔎 SERP: got {len(extracted_data['organic'])} organic results from {engine.title()}")
+        print(
+            f"🔎 SERP: got {len(extracted_data['organic'])} organic results from {engine.title()}"
+        )
     except Exception:
         pass
     return extracted_data
 
 
-def _trigger_and_download_snapshot(trigger_url, params, data, *, api_key: str | None = None, operation_name="operation"):
+def _trigger_and_download_snapshot(
+    trigger_url, params, data, *, api_key: str | None = None, operation_name="operation"
+):
     """Trigger a Bright Data dataset and download its snapshot when ready."""
     print(f"🚚 Triggering Bright Data dataset for {operation_name}…")
-    trigger_result = _make_api_request(trigger_url, params=params, json=data, api_key=api_key)
+    trigger_result = _make_api_request(
+        trigger_url, params=params, json=data, api_key=api_key
+    )
     if not trigger_result:
         return None
 
@@ -107,14 +114,14 @@ def reddit_search_api(
         raise ValueError("dataset_id is required for Reddit search")
     if not api_key:
         raise ValueError("api_key is required for Reddit search")
-        
+
     trigger_url = "https://api.brightdata.com/datasets/v3/trigger"
 
     params = {
         "dataset_id": dataset_id,
         "include_errors": "true",
         "type": "discover_new",
-        "discover_by": "keyword"
+        "discover_by": "keyword",
     }
 
     data = [
@@ -134,11 +141,15 @@ def reddit_search_api(
         return None
 
     # Debug: Print the data shape only
-    print(f"DEBUG: raw_data type: {type(raw_data)}; length: {len(raw_data) if isinstance(raw_data, list) else 'n/a'}")
+    print(
+        f"DEBUG: raw_data type: {type(raw_data)}; length: {len(raw_data) if isinstance(raw_data, list) else 'n/a'}"
+    )
 
     # Ensure raw_data is a list
     if not isinstance(raw_data, list):
-        print(f"Warning: Expected list for reddit data, got {type(raw_data)}: {raw_data}")
+        print(
+            f"Warning: Expected list for reddit data, got {type(raw_data)}: {raw_data}"
+        )
         return {"parsed_posts": [], "total_found": 0}
 
     parsed_data = []
@@ -147,10 +158,10 @@ def reddit_search_api(
         if not isinstance(post, dict):
             print(f"Warning: Expected dict for post, got {type(post)}: {post}")
             continue
-            
+
         parsed_post = {
             "title": post.get("title", "No title"),
-            "url": post.get("url", "No URL")
+            "url": post.get("url", "No URL"),
         }
         parsed_data.append(parsed_post)
 
@@ -170,23 +181,22 @@ def reddit_post_retrieval(
     if not urls:
         return None
     if not comments_dataset_id:
-        raise ValueError("comments_dataset_id is required for Reddit comments retrieval")
+        raise ValueError(
+            "comments_dataset_id is required for Reddit comments retrieval"
+        )
     if not api_key:
         raise ValueError("api_key is required for Reddit comments retrieval")
 
     trigger_url = "https://api.brightdata.com/datasets/v3/trigger"
 
-    params = {
-        "dataset_id": comments_dataset_id,
-        "include_errors": "true"
-    }
+    params = {"dataset_id": comments_dataset_id, "include_errors": "true"}
 
     data = [
         {
             "url": url,
             "days_back": days_back,
             "load_all_replies": load_all_replies,
-            "comment_limit": comment_limit
+            "comment_limit": comment_limit,
         }
         for url in urls
     ]
@@ -199,7 +209,9 @@ def reddit_post_retrieval(
 
     # Ensure raw_data is a list
     if not isinstance(raw_data, list):
-        print(f"Warning: Expected list for reddit comments data, got {type(raw_data)}: {raw_data}")
+        print(
+            f"Warning: Expected list for reddit comments data, got {type(raw_data)}: {raw_data}"
+        )
         return {"comments": [], "total_retrieved": 0}
 
     parsed_comments = []
@@ -208,7 +220,7 @@ def reddit_post_retrieval(
         if not isinstance(comment, dict):
             print(f"Warning: Expected dict for comment, got {type(comment)}: {comment}")
             continue
-            
+
         parsed_comment = {
             "comment_id": comment.get("comment_id", "No ID"),
             "content": comment.get("comment", "No content"),

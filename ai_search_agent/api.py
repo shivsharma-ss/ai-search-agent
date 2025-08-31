@@ -44,8 +44,12 @@ class ResearchRequest(BaseModel):
     question: str = Field(..., description="User question to research")
     openai_api_key: str | None = Field(None, description="OpenAI API key")
     brightdata_api_key: str | None = Field(None, description="Bright Data API key")
-    reddit_dataset_id: str | None = Field(None, description="Bright Data dataset id for Reddit search")
-    reddit_comments_dataset_id: str | None = Field(None, description="Bright Data dataset id for Reddit comments")
+    reddit_dataset_id: str | None = Field(
+        None, description="Bright Data dataset id for Reddit search"
+    )
+    reddit_comments_dataset_id: str | None = Field(
+        None, description="Bright Data dataset id for Reddit comments"
+    )
 
 
 class ResearchResponse(BaseModel):
@@ -72,12 +76,21 @@ def research(payload: ResearchRequest, request: Request):
         session_id = _get_session_id(request)
         session_settings = SETTINGS_STORE.get(session_id, {})
 
-        openai_api_key = payload.openai_api_key or session_settings.get("openai_api_key") or os.getenv("OPENAI_API_KEY")
-        bda_key = payload.brightdata_api_key or session_settings.get("brightdata_api_key") or os.getenv("BRIGHTDATA_API_KEY")
-        reddit_ds = payload.reddit_dataset_id or session_settings.get("reddit_dataset_id")
-        reddit_comments_ds = (
-            payload.reddit_comments_dataset_id
-            or session_settings.get("reddit_comments_dataset_id")
+        openai_api_key = (
+            payload.openai_api_key
+            or session_settings.get("openai_api_key")
+            or os.getenv("OPENAI_API_KEY")
+        )
+        bda_key = (
+            payload.brightdata_api_key
+            or session_settings.get("brightdata_api_key")
+            or os.getenv("BRIGHTDATA_API_KEY")
+        )
+        reddit_ds = payload.reddit_dataset_id or session_settings.get(
+            "reddit_dataset_id"
+        )
+        reddit_comments_ds = payload.reddit_comments_dataset_id or session_settings.get(
+            "reddit_comments_dataset_id"
         )
 
         config = {
@@ -96,7 +109,12 @@ def research(payload: ResearchRequest, request: Request):
         if not pf.get("ok"):
             # Summarize failures
             parts = []
-            for k in ("openai", "brightdata_api", "reddit_dataset", "reddit_comments_dataset"):
+            for k in (
+                "openai",
+                "brightdata_api",
+                "reddit_dataset",
+                "reddit_comments_dataset",
+            ):
                 r = pf.get(k) or {}
                 if not r.get("ok"):
                     parts.append(f"{k}: {r.get('message')}")
@@ -105,7 +123,9 @@ def research(payload: ResearchRequest, request: Request):
             raise HTTPException(status_code=400, detail=f"Preflight failed: {msg}")
 
         print("🚀 Preflight passed. Starting research pipeline…")
-        result = run_research(payload.question, config=config, openai_api_key=openai_api_key)
+        result = run_research(
+            payload.question, config=config, openai_api_key=openai_api_key
+        )
         run_id = uuid.uuid4().hex
         db_save_run(session_id, run_id, payload.question, result)
 
@@ -202,11 +222,19 @@ def test_settings(payload: SettingsPayload, request: Request):
     # Run consolidated preflight using saved + provided settings
     sid = _get_session_id(request)
     cur = SETTINGS_STORE.get(sid, {})
-    bright = payload.brightdata_api_key or cur.get("brightdata_api_key") or os.getenv("BRIGHTDATA_API_KEY")
-    openai_key = payload.openai_api_key or cur.get("openai_api_key") or os.getenv("OPENAI_API_KEY")
+    bright = (
+        payload.brightdata_api_key
+        or cur.get("brightdata_api_key")
+        or os.getenv("BRIGHTDATA_API_KEY")
+    )
+    openai_key = (
+        payload.openai_api_key
+        or cur.get("openai_api_key")
+        or os.getenv("OPENAI_API_KEY")
+    )
     reddit_ds = payload.reddit_dataset_id or cur.get("reddit_dataset_id")
-    reddit_comments_ds = (
-        payload.reddit_comments_dataset_id or cur.get("reddit_comments_dataset_id")
+    reddit_comments_ds = payload.reddit_comments_dataset_id or cur.get(
+        "reddit_comments_dataset_id"
     )
 
     pf = preflight_check(
@@ -220,15 +248,40 @@ def test_settings(payload: SettingsPayload, request: Request):
         brightdata_ok=bool((pf.get("brightdata_api") or {}).get("ok")),
         openai_ok=bool((pf.get("openai") or {}).get("ok")),
         reddit_dataset_ok=bool((pf.get("reddit_dataset") or {}).get("ok")),
-        reddit_comments_dataset_ok=bool((pf.get("reddit_comments_dataset") or {}).get("ok")),
-        message=None if pf.get("ok") else "; ".join(
-            [
-                f"openai: {(pf.get('openai') or {}).get('message')}" if not (pf.get('openai') or {}).get('ok') else None,
-                f"brightdata: {(pf.get('brightdata_api') or {}).get('message')}" if not (pf.get('brightdata_api') or {}).get('ok') else None,
-                f"reddit_dataset: {(pf.get('reddit_dataset') or {}).get('message')}" if not (pf.get('reddit_dataset') or {}).get('ok') else None,
-                f"reddit_comments_dataset: {(pf.get('reddit_comments_dataset') or {}).get('message')}" if not (pf.get('reddit_comments_dataset') or {}).get('ok') else None,
-            ]
-        ).strip("; ").replace("None; ", "").replace("; None", ""),
+        reddit_comments_dataset_ok=bool(
+            (pf.get("reddit_comments_dataset") or {}).get("ok")
+        ),
+        message=(
+            None
+            if pf.get("ok")
+            else "; ".join(
+                [
+                    (
+                        f"openai: {(pf.get('openai') or {}).get('message')}"
+                        if not (pf.get("openai") or {}).get("ok")
+                        else None
+                    ),
+                    (
+                        f"brightdata: {(pf.get('brightdata_api') or {}).get('message')}"
+                        if not (pf.get("brightdata_api") or {}).get("ok")
+                        else None
+                    ),
+                    (
+                        f"reddit_dataset: {(pf.get('reddit_dataset') or {}).get('message')}"
+                        if not (pf.get("reddit_dataset") or {}).get("ok")
+                        else None
+                    ),
+                    (
+                        f"reddit_comments_dataset: {(pf.get('reddit_comments_dataset') or {}).get('message')}"
+                        if not (pf.get("reddit_comments_dataset") or {}).get("ok")
+                        else None
+                    ),
+                ]
+            )
+            .strip("; ")
+            .replace("None; ", "")
+            .replace("; None", "")
+        ),
     )
 
 
@@ -274,7 +327,7 @@ def share_run(run_id: str, request: Request):
         raise HTTPException(status_code=404, detail="Run not found")
     share_id = uuid.uuid4().hex
     db_create_share(run_id, share_id)
-    base = str(request.base_url).rstrip('/')
+    base = str(request.base_url).rstrip("/")
     return ShareResponse(share_id=share_id, url=f"{base}/api/share/{share_id}")
 
 

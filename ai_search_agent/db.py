@@ -42,7 +42,9 @@ def init_db() -> None:
         conn.close()
 
 
-def save_run(session_id: str, run_id: str, question: str, result: Dict[str, Any]) -> None:
+def save_run(
+    session_id: str, run_id: str, question: str, result: Dict[str, Any]
+) -> None:
     conn = _get_conn()
     try:
         c = conn.cursor()
@@ -143,4 +145,3 @@ def get_shared(share_id: str) -> Optional[Dict[str, Any]]:
         }
     finally:
         conn.close()
-

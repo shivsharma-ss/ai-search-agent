@@ -23,10 +23,17 @@ def check_openai(key: Optional[str], timeout: int = 6) -> Dict[str, object]:
         if resp.status_code == 200:
             try:
                 data = resp.json()
-                ids = {str(m.get("id")) for m in (data.get("data") or []) if isinstance(m, dict)}
+                ids = {
+                    str(m.get("id"))
+                    for m in (data.get("data") or [])
+                    if isinstance(m, dict)
+                }
                 if "gpt-4o" in ids or "gpt-4o-mini" in ids:
                     return {"ok": True, "message": "OpenAI reachable (model available)"}
-                return {"ok": True, "message": "OpenAI reachable (model access uncertain)"}
+                return {
+                    "ok": True,
+                    "message": "OpenAI reachable (model access uncertain)",
+                }
             except Exception:
                 return {"ok": True, "message": "OpenAI reachable"}
         return {
@@ -61,12 +68,17 @@ def check_brightdata_token(token: Optional[str], timeout: int = 8) -> Dict[str, 
             pass
         if resp.status_code == 200:
             return {"ok": True, "message": "Bright Data reachable"}
-        return {"ok": False, "message": f"Bright Data check failed ({resp.status_code})"}
+        return {
+            "ok": False,
+            "message": f"Bright Data check failed ({resp.status_code})",
+        }
     except Exception as e:
         return {"ok": False, "message": f"Bright Data check error: {e}"}
 
 
-def check_brightdata_dataset_exists(token: Optional[str], dataset_id: Optional[str], timeout: int = 10) -> Dict[str, object]:
+def check_brightdata_dataset_exists(
+    token: Optional[str], dataset_id: Optional[str], timeout: int = 10
+) -> Dict[str, object]:
     if not _bool(token):
         return {"ok": False, "message": "Missing Bright Data token"}
     if not _bool(dataset_id):
@@ -98,21 +110,30 @@ def preflight_check(
     results["openai"] = r_openai
 
     r_bright = check_brightdata_token(brightdata_api_key)
-    print(f"   🌐 Bright Data API: {'OK' if r_bright['ok'] else 'FAIL'} — {r_bright['message']}")
+    print(
+        f"   🌐 Bright Data API: {'OK' if r_bright['ok'] else 'FAIL'} — {r_bright['message']}"
+    )
     results["brightdata_api"] = r_bright
 
     r_ds_search = check_brightdata_dataset_exists(brightdata_api_key, reddit_dataset_id)
-    print(f"   📚 Reddit search dataset: {'OK' if r_ds_search['ok'] else 'FAIL'} — {r_ds_search['message']}")
+    print(
+        f"   📚 Reddit search dataset: {'OK' if r_ds_search['ok'] else 'FAIL'} — {r_ds_search['message']}"
+    )
     results["reddit_dataset"] = r_ds_search
 
-    r_ds_comments = check_brightdata_dataset_exists(brightdata_api_key, reddit_comments_dataset_id)
-    print(f"   💬 Reddit comments dataset: {'OK' if r_ds_comments['ok'] else 'FAIL'} — {r_ds_comments['message']}")
+    r_ds_comments = check_brightdata_dataset_exists(
+        brightdata_api_key, reddit_comments_dataset_id
+    )
+    print(
+        f"   💬 Reddit comments dataset: {'OK' if r_ds_comments['ok'] else 'FAIL'} — {r_ds_comments['message']}"
+    )
     results["reddit_comments_dataset"] = r_ds_comments
 
-    all_ok = all(
-        r.get("ok")
-        for r in [r_openai, r_bright, r_ds_search, r_ds_comments]
-    )
+    all_ok = all(r.get("ok") for r in [r_openai, r_bright, r_ds_search, r_ds_comments])
     results["ok"] = all_ok
-    print("✅ Preflight: all systems go!\n" if all_ok else "❌ Preflight: issues detected.\n")
+    print(
+        "✅ Preflight: all systems go!\n"
+        if all_ok
+        else "❌ Preflight: issues detected.\n"
+    )
     return results
