@@ -21,7 +21,7 @@ jobs:
       uses: actions/checkout@v4
       
     - name: Set up Python ${{ env.PYTHON_VERSION }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         
@@ -31,7 +31,7 @@ jobs:
         version: latest
         
     - name: Cache Python dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           .venv
@@ -41,7 +41,7 @@ jobs:
           ${{ runner.os }}-python-${{ env.PYTHON_VERSION }}-
           
     - name: Install Python dependencies
-      run: uv sync
+      run: uv sync --extra dev
       
     - name: Run backend tests
       run: uv run pytest tests/ -v --cov=ai_search_agent --cov-report=xml
@@ -82,7 +82,7 @@ jobs:
       run: npm run build
       
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: frontend-build
         path: frontend/dist/
@@ -98,7 +98,7 @@ jobs:
       uses: actions/checkout@v4
       
     - name: Set up Python ${{ env.PYTHON_VERSION }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ env.PYTHON_VERSION }}
         
@@ -108,7 +108,7 @@ jobs:
         version: latest
         
     - name: Install Python dependencies
-      run: uv sync
+      run: uv sync --extra dev
       
     - name: Run security checks
       run: |
@@ -122,7 +122,7 @@ jobs:
       run: uv run flake8 ai_search_agent/ tests/ --max-line-length=88 --extend-ignore=E203,W503
       
     - name: Upload security reports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: security-reports
         path: |
@@ -141,6 +141,11 @@ jobs:
       uses: actions/checkout@v4
       
     - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Set up Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
@@ -152,7 +157,7 @@ jobs:
         
     - name: Install dependencies
       run: |
-        uv sync
+        uv sync --extra dev
         cd frontend && npm ci
         
     - name: Start backend server

@@ -17,7 +17,7 @@ jobs:
       uses: actions/checkout@v4
       
     - name: Set up Python 3.11
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         
@@ -27,7 +27,7 @@ jobs:
         version: latest
         
     - name: Cache Python dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           .venv
@@ -37,7 +37,7 @@ jobs:
           ${{ runner.os }}-python-3.11-
           
     - name: Install Python dependencies
-      run: uv sync
+      run: uv sync --extra dev
       
     - name: Run backend tests
       run: uv run pytest tests/ -v
@@ -73,7 +73,7 @@ jobs:
       run: npm run build
       
     - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: frontend-build
         path: frontend/dist/
@@ -90,7 +90,7 @@ jobs:
       uses: actions/checkout@v4
       
     - name: Set up Python 3.11
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
         
@@ -101,7 +101,7 @@ jobs:
         
     - name: Install dependencies
       run: |
-        uv sync
+        uv sync --extra dev
         cd frontend && npm ci
         
     - name: Test backend startup
