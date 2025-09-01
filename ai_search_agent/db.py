@@ -2,7 +2,7 @@ import os
 import json
 import sqlite3
 import time
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 DB_PATH = os.environ.get("ASA_DB_PATH", os.path.join(os.getcwd(), "asa.db"))
 
@@ -49,7 +49,10 @@ def save_run(
     try:
         c = conn.cursor()
         c.execute(
-            "INSERT INTO runs (id, session_id, ts, question, result) VALUES (?, ?, ?, ?, ?)",
+            (
+                "INSERT INTO runs (id, session_id, ts, question, result) "
+                "VALUES (?, ?, ?, ?, ?)"
+            ),
             (run_id, session_id, int(time.time()), question, json.dumps(result)),
         )
         conn.commit()
@@ -62,7 +65,11 @@ def list_runs(session_id: str) -> List[Dict[str, Any]]:
     try:
         c = conn.cursor()
         rows = c.execute(
-            "SELECT id, ts, question, result FROM runs WHERE session_id = ? ORDER BY ts DESC",
+            (
+                "SELECT id, ts, question, result "
+                "FROM runs WHERE session_id = ? "
+                "ORDER BY ts DESC"
+            ),
             (session_id,),
         ).fetchall()
         metas: List[Dict[str, Any]] = []
@@ -89,7 +96,10 @@ def get_run(session_id: str, run_id: str) -> Optional[Dict[str, Any]]:
     try:
         c = conn.cursor()
         row = c.execute(
-            "SELECT id, ts, question, result FROM runs WHERE session_id = ? AND id = ?",
+            (
+                "SELECT id, ts, question, result "
+                "FROM runs WHERE session_id = ? AND id = ?"
+            ),
             (session_id, run_id),
         ).fetchone()
         if not row:
@@ -132,7 +142,11 @@ def get_shared(share_id: str) -> Optional[Dict[str, Any]]:
     try:
         c = conn.cursor()
         row = c.execute(
-            "SELECT r.id, r.ts, r.question, r.result FROM shares s JOIN runs r ON s.run_id = r.id WHERE s.share_id = ?",
+            (
+                "SELECT r.id, r.ts, r.question, r.result "
+                "FROM shares s JOIN runs r ON s.run_id = r.id "
+                "WHERE s.share_id = ?"
+            ),
             (share_id,),
         ).fetchone()
         if not row:

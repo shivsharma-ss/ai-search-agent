@@ -71,3 +71,6 @@ exclude = [
     "build",
     "dist",
 ]
+per-file-ignores = [
+    "ai_search_agent/prompts.py:E501",
+]

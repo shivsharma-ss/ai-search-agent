@@ -115,7 +115,7 @@ def analyze_reddit_posts(state: State):
     if not reddit_results:
         return {"selected_reddit_urls": []}
     llm = state.get("llm")
-    structured_llm = llm.with_structured_output(RedditURLAnalysis)  # type: ignore[attr-defined]
+    structured_llm = llm.with_structured_output(RedditURLAnalysis)
     messages = get_reddit_url_analysis_messages(user_question, reddit_results)
 
     try:

@@ -8,8 +8,6 @@ Endpoints:
 import os
 import uuid
 from typing import Any, Dict, List, Optional
-
-import requests
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
@@ -156,7 +154,8 @@ async def attach_session(request: Request, call_next):
         new_session = True
     request.state.session_id = session_id
 
-    # If the request body is JSON we want to attach session_id to the parsed payload later
+    # If the request body is JSON we want to attach
+    # session_id to the parsed payload later
     response: Response = await call_next(request)
     if new_session:
         response.set_cookie(
@@ -249,37 +248,40 @@ def test_settings(payload: SettingsPayload, request: Request):
         reddit_dataset_id=reddit_ds,
         reddit_comments_dataset_id=reddit_comments_ds,
     )
+    openai_res = pf.get("openai") or {}
+    bright_res = pf.get("brightdata_api") or {}
+    reddit_res = pf.get("reddit_dataset") or {}
+    reddit_comments_res = pf.get("reddit_comments_dataset") or {}
+
     return TestSettingsResponse(
         ok=bool(pf.get("ok")),
-        brightdata_ok=bool((pf.get("brightdata_api") or {}).get("ok")),
-        openai_ok=bool((pf.get("openai") or {}).get("ok")),
-        reddit_dataset_ok=bool((pf.get("reddit_dataset") or {}).get("ok")),
-        reddit_comments_dataset_ok=bool(
-            (pf.get("reddit_comments_dataset") or {}).get("ok")
-        ),
+        brightdata_ok=bool(bright_res.get("ok")),
+        openai_ok=bool(openai_res.get("ok")),
+        reddit_dataset_ok=bool(reddit_res.get("ok")),
+        reddit_comments_dataset_ok=bool(reddit_comments_res.get("ok")),
         message=(
             None
             if pf.get("ok")
             else "; ".join(
                 [
                     (
-                        f"openai: {(pf.get('openai') or {}).get('message')}"
-                        if not (pf.get("openai") or {}).get("ok")
+                        f"openai: {openai_res.get('message')}"
+                        if not openai_res.get("ok")
                         else None
                     ),
                     (
-                        f"brightdata: {(pf.get('brightdata_api') or {}).get('message')}"
-                        if not (pf.get("brightdata_api") or {}).get("ok")
+                        f"brightdata: {bright_res.get('message')}"
+                        if not bright_res.get("ok")
                         else None
                     ),
                     (
-                        f"reddit_dataset: {(pf.get('reddit_dataset') or {}).get('message')}"
-                        if not (pf.get("reddit_dataset") or {}).get("ok")
+                        f"reddit_dataset: {reddit_res.get('message')}"
+                        if not reddit_res.get("ok")
                         else None
                     ),
                     (
-                        f"reddit_comments_dataset: {(pf.get('reddit_comments_dataset') or {}).get('message')}"
-                        if not (pf.get("reddit_comments_dataset") or {}).get("ok")
+                        f"reddit_comments_dataset: {reddit_comments_res.get('message')}"
+                        if not reddit_comments_res.get("ok")
                         else None
                     ),
                 ]

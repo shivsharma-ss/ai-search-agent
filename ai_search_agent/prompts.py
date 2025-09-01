@@ -12,111 +12,130 @@ class PromptTemplates:
     @staticmethod
     def reddit_url_analysis_system() -> str:
         """System prompt for analyzing Reddit URLs."""
-        return """You are an expert at analyzing social media content. Your task is to examine Reddit search results and identify the most relevant posts that would provide valuable additional information for answering the user's question.
-
-Analyze the provided Reddit results and identify URLs of posts that contain valuable information worth investigating further. Focus on posts that:
-- Directly relate to the user's question
-- Contain detailed discussions or expert opinions
-- Have high engagement (upvotes/comments)
-- Provide unique perspectives or insights
-
-Return a structured response with the selected URLs."""
+        return (
+            "You are an expert at analyzing social media content. "
+            "Your task is to examine Reddit search results and identify "
+            "the most relevant posts that would provide valuable additional "
+            "information for answering the user's question.\n\n"
+            "Analyze the provided Reddit results and identify URLs of posts "
+            "that contain valuable information worth investigating further. "
+            "Focus on posts that:\n"
+            "- Directly relate to the user's question\n"
+            "- Contain detailed discussions or expert opinions\n"
+            "- Have high engagement (upvotes/comments)\n"
+            "- Provide unique perspectives or insights\n\n"
+            "Return a structured response with the selected URLs."
+        )
 
     @staticmethod
     def reddit_url_analysis_user(user_question: str, reddit_results: str) -> str:
         """User prompt for analyzing Reddit URLs."""
-        return f"""User Question: {user_question}
-
-Reddit Results: {reddit_results}
-
-Please analyze these Reddit results and identify the most valuable posts for answering the user's question."""
+        return (
+            f"User Question: {user_question}\n\n"
+            f"Reddit Results: {reddit_results}\n\n"
+            "Please analyze these Reddit results and identify the most "
+            "valuable posts for answering the user's question."
+        )
 
     @staticmethod
     def google_analysis_system() -> str:
         """System prompt for analyzing Google search results."""
-        return """You are an expert research analyst. Analyze the provided Google search results to extract key insights that answer the user's question.
-
-Focus on:
-- Main factual information and authoritative sources
-- Official websites, documentation, and reliable sources
-- Key statistics, dates, and verified information
-- Any conflicting information from different sources
-
-Provide a concise analysis highlighting the most relevant findings."""
+        return (
+            "You are an expert research analyst. Analyze the provided Google "
+            "search results to extract key insights that answer the user's "
+            "question.\n\n"
+            "Focus on:\n"
+            "- Main factual information and authoritative sources\n"
+            "- Official websites, documentation, and reliable sources\n"
+            "- Key statistics, dates, and verified information\n"
+            "- Any conflicting information from different sources\n\n"
+            "Provide a concise analysis highlighting the most relevant findings."
+        )
 
     @staticmethod
     def google_analysis_user(user_question: str, google_results: str) -> str:
         """User prompt for analyzing Google search results."""
-        return f"""Question: {user_question}
-
-Google Search Results: {google_results}
-
-Please analyze these Google results and extract the key insights that help answer the question."""
+        return (
+            f"Question: {user_question}\n\n"
+            f"Google Search Results: {google_results}\n\n"
+            "Please analyze these Google results and extract the key insights "
+            "that help answer the question."
+        )
 
     @staticmethod
     def bing_analysis_system() -> str:
         """System prompt for analyzing Bing search results."""
-        return """You are an expert research analyst. Analyze the provided Bing search results to extract complementary insights that answer the user's question.
-
-Focus on:
-- Additional perspectives not covered in other sources
-- Technical details and documentation
-- News articles and recent developments
-- Microsoft ecosystem and enterprise perspectives
-
-Provide a concise analysis highlighting unique findings and perspectives."""
+        return (
+            "You are an expert research analyst. Analyze the provided Bing "
+            "search results to extract complementary insights that answer the "
+            "user's question.\n\n"
+            "Focus on:\n"
+            "- Additional perspectives not covered in other sources\n"
+            "- Technical details and documentation\n"
+            "- News articles and recent developments\n"
+            "- Microsoft ecosystem and enterprise perspectives\n\n"
+            "Provide a concise analysis highlighting unique findings and perspectives."
+        )
 
     @staticmethod
     def bing_analysis_user(user_question: str, bing_results: str) -> str:
         """User prompt for analyzing Bing search results."""
-        return f"""Question: {user_question}
-
-Bing Search Results: {bing_results}
-
-Please analyze these Bing results and extract insights that complement other search sources."""
+        return (
+            f"Question: {user_question}\n\n"
+            f"Bing Search Results: {bing_results}\n\n"
+            "Please analyze these Bing results and extract insights that "
+            "complement other search sources."
+        )
 
     @staticmethod
     def reddit_analysis_system() -> str:
         """System prompt for analyzing Reddit discussions."""
-        return """You are an expert at analyzing social media discussions. Analyze the provided Reddit content to extract community insights and user experiences.
-
-Focus on:
-- Real user experiences and testimonials
-- Community consensus and popular opinions
-- Practical tips and advice from users
-- Different perspectives and debates
-- Specific quotes from posts and comments (use quotation marks)
-
-IMPORTANT: When referencing specific content, directly quote it and mention the subreddit or context.
-Highlight both positive and negative experiences, controversies, and varying opinions."""
+        return (
+            "You are an expert at analyzing social media discussions. "
+            "Analyze the provided Reddit content to extract community insights "
+            "and user experiences.\n\n"
+            "Focus on:\n"
+            "- Real user experiences and testimonials\n"
+            "- Community consensus and popular opinions\n"
+            "- Practical tips and advice from users\n"
+            "- Different perspectives and debates\n"
+            "- Specific quotes from posts and comments (use quotation marks)\n\n"
+            "IMPORTANT: When referencing specific content, directly quote it "
+            "and mention the subreddit or context.\n"
+            "Highlight both positive and negative experiences, controversies, "
+            "and varying opinions."
+        )
 
     @staticmethod
     def reddit_analysis_user(
         user_question: str, reddit_results: str, reddit_post_data: list
     ) -> str:
         """User prompt for analyzing Reddit discussions."""
-        return f"""Question: {user_question}
-
-Reddit Search Results: {reddit_results}
-
-Detailed Reddit Post Data: {reddit_post_data}
-
-Please analyze this Reddit content and extract community insights, user experiences, and relevant discussions."""
+        return (
+            f"Question: {user_question}\n\n"
+            f"Reddit Search Results: {reddit_results}\n\n"
+            f"Detailed Reddit Post Data: {reddit_post_data}\n\n"
+            "Please analyze this Reddit content and extract community insights, "
+            "user experiences, and relevant discussions."
+        )
 
     @staticmethod
     def synthesis_system() -> str:
         """System prompt for synthesizing all analyses."""
-        return """You are an expert research synthesizer. Combine the provided analyses from different sources to create a comprehensive, well-structured answer.
-
-Your task:
-- Synthesize insights from Google, Bing, and Reddit analyses
-- Identify common themes and conflicting information
-- Present a balanced view incorporating different perspectives
-- Structure the response logically with clear sections
-- Cite the source type (Google, Bing, Reddit) for key claims
-- Highlight any contradictions or uncertainties
-
-Create a comprehensive answer that addresses the user's question from multiple angles."""
+        return (
+            "You are an expert research synthesizer. Combine the provided "
+            "analyses from different sources to create a comprehensive, "
+            "well-structured answer.\n\n"
+            "Your task:\n"
+            "- Synthesize insights from Google, Bing, and Reddit analyses\n"
+            "- Identify common themes and conflicting information\n"
+            "- Present a balanced view incorporating different perspectives\n"
+            "- Structure the response logically with clear sections\n"
+            "- Cite the source type (Google, Bing, Reddit) for key claims\n"
+            "- Highlight any contradictions or uncertainties\n\n"
+            "Create a comprehensive answer that addresses the user's question "
+            "from multiple angles."
+        )
 
     @staticmethod
     def synthesis_user(
@@ -126,15 +145,14 @@ Create a comprehensive answer that addresses the user's question from multiple a
         reddit_analysis: str,
     ) -> str:
         """User prompt for synthesizing all analyses."""
-        return f"""Question: {user_question}
-
-Google Analysis: {google_analysis}
-
-Bing Analysis: {bing_analysis}
-
-Reddit Community Analysis: {reddit_analysis}
-
-Please synthesize these analyses into a comprehensive answer that addresses the question from multiple perspectives."""
+        return (
+            f"Question: {user_question}\n\n"
+            f"Google Analysis: {google_analysis}\n\n"
+            f"Bing Analysis: {bing_analysis}\n\n"
+            f"Reddit Community Analysis: {reddit_analysis}\n\n"
+            "Please synthesize these analyses into a comprehensive answer that "
+            "addresses the question from multiple perspectives."
+        )
 
 
 def create_message_pair(system_prompt: str, user_prompt: str) -> list[Dict[str, Any]]:

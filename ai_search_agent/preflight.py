@@ -1,4 +1,3 @@
-import os
 from typing import Dict, Optional
 import requests
 
@@ -111,13 +110,19 @@ def preflight_check(
 
     r_bright = check_brightdata_token(brightdata_api_key)
     print(
-        f"   🌐 Bright Data API: {'OK' if r_bright['ok'] else 'FAIL'} — {r_bright['message']}"
+        (
+            "   🌐 Bright Data API: "
+            f"{'OK' if r_bright['ok'] else 'FAIL'} — {r_bright['message']}"
+        )
     )
     results["brightdata_api"] = r_bright
 
     r_ds_search = check_brightdata_dataset_exists(brightdata_api_key, reddit_dataset_id)
     print(
-        f"   📚 Reddit search dataset: {'OK' if r_ds_search['ok'] else 'FAIL'} — {r_ds_search['message']}"
+        (
+            "   📚 Reddit search dataset: "
+            f"{'OK' if r_ds_search['ok'] else 'FAIL'} — {r_ds_search['message']}"
+        )
     )
     results["reddit_dataset"] = r_ds_search
 
@@ -125,11 +130,16 @@ def preflight_check(
         brightdata_api_key, reddit_comments_dataset_id
     )
     print(
-        f"   💬 Reddit comments dataset: {'OK' if r_ds_comments['ok'] else 'FAIL'} — {r_ds_comments['message']}"
+        (
+            "   💬 Reddit comments dataset: "
+            f"{'OK' if r_ds_comments['ok'] else 'FAIL'} — {r_ds_comments['message']}"
+        )
     )
     results["reddit_comments_dataset"] = r_ds_comments
 
-    all_ok = all(r.get("ok") for r in [r_openai, r_bright, r_ds_search, r_ds_comments])
+    all_ok = all(
+        r.get("ok") for r in [r_openai, r_bright, r_ds_search, r_ds_comments]
+    )
     results["ok"] = all_ok
     print(
         "✅ Preflight: all systems go!\n"

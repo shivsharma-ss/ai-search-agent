@@ -28,7 +28,10 @@ def poll_snapshot_status(
     for attempt in range(max_attempts):
         try:
             print(
-                f"⏳ Checking snapshot progress... (attempt {attempt + 1}/{max_attempts})"
+                (
+                    "⏳ Checking snapshot progress... (attempt "
+                    f"{attempt + 1}/{max_attempts})"
+                )
             )
 
             response = requests.get(progress_url, headers=headers)
@@ -84,7 +87,10 @@ def download_snapshot(
 
         data = response.json()
         print(
-            f"🎉 Successfully downloaded {len(data) if isinstance(data, list) else 1} items"
+            (
+                "🎉 Successfully downloaded "
+                f"{len(data) if isinstance(data, list) else 1} items"
+            )
         )
 
         return data

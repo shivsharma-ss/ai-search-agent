@@ -71,7 +71,11 @@ def serp_search(query, engine="google", *, api_key: str | None = None):
     }
     try:
         print(
-            f"🔎 SERP: got {len(extracted_data['organic'])} organic results from {engine.title()}"
+            (
+                "🔎 SERP: got "
+                f"{len(extracted_data['organic'])} organic results from "
+                f"{engine.title()}"
+            )
         )
     except Exception:
         pass
@@ -142,7 +146,11 @@ def reddit_search_api(
 
     # Debug: Print the data shape only
     print(
-        f"DEBUG: raw_data type: {type(raw_data)}; length: {len(raw_data) if isinstance(raw_data, list) else 'n/a'}"
+        (
+            "DEBUG: raw_data type: "
+            f"{type(raw_data)}; length: "
+            f"{len(raw_data) if isinstance(raw_data, list) else 'n/a'}"
+        )
     )
 
     # Ensure raw_data is a list
@@ -210,7 +218,10 @@ def reddit_post_retrieval(
     # Ensure raw_data is a list
     if not isinstance(raw_data, list):
         print(
-            f"Warning: Expected list for reddit comments data, got {type(raw_data)}: {raw_data}"
+            (
+                "Warning: Expected list for reddit comments data, got "
+                f"{type(raw_data)}: {raw_data}"
+            )
         )
         return {"comments": [], "total_retrieved": 0}
 
