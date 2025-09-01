@@ -175,8 +175,8 @@ jobs:
       run: |
         npm run build
         npm run preview &
-        sleep 5
-        curl -f http://localhost:4173/ || exit 1
+        sleep 8
+        curl -f http://localhost:5173/ || exit 1
         echo "Frontend is working"
 
   # Deployment (Optional - for future use)
