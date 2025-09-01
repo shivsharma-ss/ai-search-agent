@@ -126,10 +126,16 @@ def research(payload: ResearchRequest, request: Request):
         result = run_research(
             payload.question, config=config, openai_api_key=openai_api_key
         )
-        run_id = uuid.uuid4().hex
-        db_save_run(session_id, run_id, payload.question, result)
 
-        return ResearchResponse(**result)  # type: ignore[arg-type]
+        # Sanitize pipeline output: keep only fields defined in the
+        # response model and ensure values are JSON-serializable.
+        safe_response = ResearchResponse(**result)
+        safe_payload = safe_response.model_dump(exclude_none=True)
+
+        run_id = uuid.uuid4().hex
+        db_save_run(session_id, run_id, payload.question, safe_payload)
+
+        return safe_response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e)) from e
 
