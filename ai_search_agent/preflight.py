@@ -137,9 +137,7 @@ def preflight_check(
     )
     results["reddit_comments_dataset"] = r_ds_comments
 
-    all_ok = all(
-        r.get("ok") for r in [r_openai, r_bright, r_ds_search, r_ds_comments]
-    )
+    all_ok = all(r.get("ok") for r in [r_openai, r_bright, r_ds_search, r_ds_comments])
     results["ok"] = all_ok
     print(
         "✅ Preflight: all systems go!\n"
