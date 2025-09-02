@@ -18,3 +18,9 @@ frontend/dist
 coverage.xml
 frontend/.vite
 *.log
+
+# Local MCP configs and artifacts
+.vscode/mcp.json
+.mcp/
+package/
+modelcontextprotocol-server-sequential-thinking-*.tgz
